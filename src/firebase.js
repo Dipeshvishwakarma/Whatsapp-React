@@ -1,16 +1,18 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore/lite';
+import { getFirestore } from 'firebase/firestore';
+ 
+
 const firebaseConfig = {
-    apiKey: "AIzaSyB5564Rq4bQNIZXb6-TSFh2xGb74guvMw4",
-    authDomain: "whatsapp-clone-react-3c96e.firebaseapp.com",
-    projectId: "whatsapp-clone-react-3c96e",
-    storageBucket: "whatsapp-clone-react-3c96e.appspot.com",
-    messagingSenderId: "474185146138",
-    appId: "1:474185146138:web:234bb81da4145697f996a3"
-  };
+  apiKey: "AIzaSyB5564Rq4bQNIZXb6-TSFh2xGb74guvMw4",
+  authDomain: "whatsapp-clone-react-3c96e.firebaseapp.com",
+  projectId: "whatsapp-clone-react-3c96e",
+  storageBucket: "whatsapp-clone-react-3c96e.appspot.com",
+  messagingSenderId: "474185146138",
+  appId: "1:474185146138:web:234bb81da4145697f996a3"
+};
 
-  const firebaseApp = initializeApp(firebaseConfig);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-  const db = firebaseApp.getFirestore();
-
-  export default db;
+export default db;
