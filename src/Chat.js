@@ -1,19 +1,56 @@
-import { Avatar, IconButton } from '@material-ui/core'
-import React from 'react'
+import { Avatar, IconButton } from '@material-ui/core';
+import React, { useEffect, useState } from 'react'
 import SearchIcon from '@material-ui/icons/Search';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import "./Chat.css";
 import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
 import MicIcon from '@material-ui/icons/Mic';
+import { useParams } from 'react-router-dom';
+import db from "./firebase";
+import firebase from "firebase";
 
 const Chat = () => {
+
+    const { roomId } = useParams();
+    const [roomName,setRoomName] = useState("");
+    const [input,setInput] = useState("");
+    const [messages,setMessages] = useState([]);
+    //console.log(roomId);
+
+    useEffect(() => {
+      if(roomId)
+      {   
+       db.collection("rooms").doc(roomId).onSnapshot(snapshot=>{
+           setRoomName(snapshot.data().name)
+       });
+       db.collection("rooms").doc(roomId).collection("message").orderBy("timestamp","asc").
+       onSnapshot(snapshot=>{
+           setMessages(snapshot.docs.map(doc=>doc.data()))
+       })
+
+      }
+     
+    }, [roomId])
+    
+    const sendMessage = (e)=>{
+        e.preventDefault();
+        if(input=="")
+        return alert("Please enter your message");
+
+        db.collection("rooms").doc(roomId).collection("message").add({
+            name:"Deepesh",
+            message:input,
+            timestamp:firebase.firestore.FieldValue.serverTimestamp()
+        })
+        setInput("");
+    }
   return (
     <div className='chat'>
         <div className='chat__header'>
-            <Avatar/>
+            <Avatar src="https://avatars.dicebear.com/api/avataaars/123.svg"/>
             <div className='chat__headerInfo'>
-                <h3>Room Name</h3>
+                <h3>{roomName}</h3>
                 <p>Last seen..</p>
             </div>
             <div className='header__right'>
@@ -30,39 +67,36 @@ const Chat = () => {
         </div>
 
         <div className='chat__body'>
-            <p className='chat__message chat__reciever'>
-                <span className='chat__name'>Deepesh Vishwakarma</span>
-                This is test message
-                <span className='chat__time'>12:40 PM</span>
-            </p>
-            <p className='chat__message chat__reciever'>
-                <span className='chat__name'>Deepesh Vishwakarma</span>
-                This is test message
-                <span className='chat__time'>12:40 PM</span>
-            </p>
-            <p className='chat__message'>
-                <span className='chat__name'>Deepesh Vishwakarma</span>
-                This is test message
-                <span className='chat__time'>12:40 PM</span>
-            </p>
-            <p className='chat__message '>
-                <span className='chat__name'>Deepesh Vishwakarma</span>
-                This is test message
-                <span className='chat__time'>12:40 PM</span>
-            </p>
+            {
+                messages.map((message,id)=>(
+                    <p className='chat__message chat__reciever' key={id}>
+                    <span className='chat__name'>{message.name}</span>
+                    {message.message}
+                    <span className='chat__time'>
+                      { new Date(message.timestamp?.seconds*1000).toLocaleTimeString()}
+                    </span>
+                   </p>
+                //console.log(message)
+                ))
+            }
+            {/* <p className='chat__message chat__reciever'>
+                    <span className='chat__name'>Deepesh</span>
+                    Hi...
+                    <span className='chat__time'>12:40 PM</span>
+                </p> */}
         </div>
 
         <div className='chat__footer'>
           <EmojiEmotionsIcon/>
           <AttachFileIcon/>
-          <form>
-              <input type="text" placeholder="Type your message"/>
+          <form onSubmit={sendMessage}>
+              <input type="text" value={input} onChange={e=>setInput(e.target.value)} placeholder="Type your message"/>
               <input type="submit"/>
           </form>
           <MicIcon/>
         </div>
     </div>
   )
-}
+};
 
-export default Chat
+export default Chat;

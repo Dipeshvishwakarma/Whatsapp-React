@@ -7,21 +7,21 @@ import SearchIcon from '@material-ui/icons/Search';
 import "./Sidebar.css";
 import SidebarChat from './SidebarChat';
  import db from './firebase';
- import { collection,onSnapshot,query } from "firebase/firestore";
+
 
 const Sidebar = () => {
     const [rooms,setRooms] = useState([]);
     useEffect(() => {
-
-    const q = query(collection(db, "rooms"));
-    const unsub = onSnapshot(q, (querySnapshot) => {
-    querySnapshot.docs.map(doc =>setRooms(prev=>[...prev,{id:doc.id,
-        data:doc.data()}]))
-        
-  });
+    db.collection("rooms").onSnapshot(snapshot=>{
+        snapshot.docs.map(doc=>setRooms(prev=>[...prev,{
+            id:doc.id,
+            data:doc.data()
+        }])
+        )
+    })
     
     }, []);  
-   console.log(typeof(rooms));
+   //console.log(rooms);
     
     return (
         <div className='sidebar'>
