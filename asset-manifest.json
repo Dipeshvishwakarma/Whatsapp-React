@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/Whatsapp-React/static/css/main.cedbddcb.css",
+    "main.js": "/Whatsapp-React/static/js/main.0089d3e6.js",
+    "static/js/787.9df3cdb1.chunk.js": "/Whatsapp-React/static/js/787.9df3cdb1.chunk.js",
+    "index.html": "/Whatsapp-React/index.html",
+    "main.cedbddcb.css.map": "/Whatsapp-React/static/css/main.cedbddcb.css.map",
+    "main.0089d3e6.js.map": "/Whatsapp-React/static/js/main.0089d3e6.js.map",
+    "787.9df3cdb1.chunk.js.map": "/Whatsapp-React/static/js/787.9df3cdb1.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.cedbddcb.css",
+    "static/js/main.0089d3e6.js"
+  ]
+}
