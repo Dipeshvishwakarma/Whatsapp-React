@@ -9,6 +9,7 @@ import MicIcon from '@material-ui/icons/Mic';
 import { useParams } from 'react-router-dom';
 import db from "./firebase";
 import firebase from "firebase";
+import { useStateValue } from './StateProvider';
 
 const Chat = () => {
 
@@ -16,6 +17,7 @@ const Chat = () => {
     const [roomName,setRoomName] = useState("");
     const [input,setInput] = useState("");
     const [messages,setMessages] = useState([]);
+    const [{user},dispatch] = useStateValue();
     //console.log(roomId);
 
     useEffect(() => {
@@ -39,7 +41,7 @@ const Chat = () => {
         return alert("Please enter your message");
 
         db.collection("rooms").doc(roomId).collection("message").add({
-            name:"Deepesh",
+            name:user.displayName,
             message:input,
             timestamp:firebase.firestore.FieldValue.serverTimestamp()
         })
@@ -51,7 +53,7 @@ const Chat = () => {
             <Avatar src="https://avatars.dicebear.com/api/avataaars/123.svg"/>
             <div className='chat__headerInfo'>
                 <h3>{roomName}</h3>
-                <p>Last seen..</p>
+                <p>{new Date(messages[messages.length-1]?.timestamp?.seconds*1000).toLocaleTimeString()}</p>
             </div>
             <div className='header__right'>
              <IconButton>
@@ -69,21 +71,17 @@ const Chat = () => {
         <div className='chat__body'>
             {
                 messages.map((message,id)=>(
-                    <p className='chat__message chat__reciever' key={id}>
+                    <p className={`chat__message ${user.displayName===message.name && "chat__reciever"}`} key={id}>
                     <span className='chat__name'>{message.name}</span>
                     {message.message}
                     <span className='chat__time'>
                       { new Date(message.timestamp?.seconds*1000).toLocaleTimeString()}
                     </span>
                    </p>
-                //console.log(message)
+               
                 ))
             }
-            {/* <p className='chat__message chat__reciever'>
-                    <span className='chat__name'>Deepesh</span>
-                    Hi...
-                    <span className='chat__time'>12:40 PM</span>
-                </p> */}
+           
         </div>
 
         <div className='chat__footer'>
